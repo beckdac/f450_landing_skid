@@ -10,9 +10,10 @@ part = "assembly";
 
 /* [Misc] */
 plateThickness = 4;	// thickness of mount plate
-partThickness = 4;	// thickness of walls (not mount plate) 
+partThickness = 3;	// thickness of walls (not mount plate) 
 iFitAdjust = .4;	// interference fit adjustment for 3D printer
 cylHeightExt = .1;	// for overcutting on differences so they render correctly, nothing more, some small positive value
+M3D = 3.1;			// M3 screw diameter
 // render quality
 $fn = 64; // [24:low quality, 48:development, 64:production]
 
@@ -44,16 +45,28 @@ module render_part() {
 
 module assembly() {
 	//arrowShaft(100);
-	tFitting(40);
+	tFitting();
 }
 
-module tFitting(tAngle) {
-	//rotate([0, 0, tAngle])
+module tFitting(half) {
+	for ([-1, 1]) {
+		difference() {
+			tFittingWhole();
+		}
+		difference() {
+			tFittingWhole();
+		}
+	}
+}
+
+module tFittingWhole() {
+  difference() {
 	union() {
 		/* horizontal of T */
 		difference() {
-			cylinder(h=tFittingCaptureLength,
-				d=arrowShaftOD + 2 * partThickness, center=true);
+			cube([arrowShaftOD + 2 * partThickness,
+				arrowShaftOD + 2 * partThickness,
+				tFittingCaptureLength], center=true);
 			cylinder(h=tFittingCaptureLength + cylHeightExt,
 				d=arrowShaftOD, center=true);
 		}
@@ -64,8 +77,9 @@ module tFitting(tAngle) {
 				0])
 		   rotate([90, 0, 0])
 			difference() {
-				cylinder(h=tFittingCaptureLength,
-					d=arrowShaftOD + 2 * partThickness, center=true);
+				cube([arrowShaftOD + 2 * partThickness,
+					arrowShaftOD + 2 * partThickness,
+					tFittingCaptureLength], center=true);
 				cylinder(h=tFittingCaptureLength + cylHeightExt,
 					d=arrowShaftOD, center=true);
 			}
@@ -74,11 +88,23 @@ module tFitting(tAngle) {
 				d=arrowShaftOD + 2 * partThickness, center=true);
 		}
 		translate([0, partThickness + arrowShaftOD / 2, 0])
-		rotate([0, 90, 0])
-			cube([2 * partThickness,
+		rotate([0, 90, 0]) {
+			cube([arrowShaftOD + 2 * partThickness,
 				2 * partThickness,
 				arrowShaftOD + 2 * partThickness], center=true);
+		}
 	}
+			translate([(arrowShaftOD + 2 * partThickness) / 2,
+				arrowShaftOD + 2 * partThickness,
+				0])
+			cube([arrowShaftOD + 2 * partThickness + cylHeightExt,
+				3.2 * (arrowShaftOD + 2 * partThickness),
+				tFittingCaptureLength * 1.1], center=true);
+		translate([0, partThickness + arrowShaftOD / 2, 0])
+			rotate([0, 90, 0])
+				cylinder(h=arrowShaftOD + 2 * partThickness + cylHeightExt,
+					d=M3D, center=true);
+  }
 }
 
 module mountPlate() {
