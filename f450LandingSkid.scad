@@ -26,6 +26,9 @@ arrowShaftThickness = 1;
 arrowShaftID = arrowShaftOD - 2 * arrowShaftThickness;
 
 /* [mountPlate] */
+mountPlateScrewD = 4;
+mountPlateScrewSep = 33.5; // tbm
+
 
 render_part();
 
@@ -45,21 +48,11 @@ module render_part() {
 
 module assembly() {
 	//arrowShaft(100);
-	tFitting();
+	//tFitting();
+	mountPlate();
 }
 
-module tFitting(half) {
-	for ([-1, 1]) {
-		difference() {
-			tFittingWhole();
-		}
-		difference() {
-			tFittingWhole();
-		}
-	}
-}
-
-module tFittingWhole() {
+module tFitting() {
   difference() {
 	union() {
 		/* horizontal of T */
@@ -109,10 +102,6 @@ module tFittingWhole() {
   }
 }
 
-module mountPlate() {
-
-}
-
 module arrowShaft(arrowShaftLength) {
 	difference() {
 		cylinder(h=arrowShaftLength, d=arrowShaftOD, center=true);
@@ -121,5 +110,40 @@ module arrowShaft(arrowShaftLength) {
 }
 
 module mountPlate() {
-
+	difference() {
+		union() {
+			cube([mountPlateScrewSep + 4 * mountPlateScrewD,
+				4 * mountPlateScrewD,
+				plateThickness], center=true);
+			hull() {
+			}
+			for (i = [-1,1])
+				translate([i * (mountPlateScrewSep + 4 * mountPlateScrewD) /2, 0, 0])
+				rotate([0, i * 30, 0])
+			#cube([100,
+				arrowShaftOD + 2 * partThickness,
+				plateThickness], center=true);
+			/* horizontal of T */
+			for (i = [-1, 1])
+				translate([i * (mountPlateScrewSep + 4 * mountPlateScrewD) / 2,
+					, 0, plateThickness / 2  -(arrowShaftOD + 2 * partThickness) / 2])
+				rotate([90, 0, 0])
+				difference() {
+					hull() {
+						cylinder(h=4 * mountPlateScrewD,
+							d=arrowShaftOD + 2 * partThickness, center=true);
+						translate([-i * (4 * mountPlateScrewD),
+								(arrowShaftOD + 2 * partThickness) / 2,
+								0])
+							#cylinder(h=4 * mountPlateScrewD,
+								d=.00001, center=true);
+					}
+					cylinder(h=4 * mountPlateScrewD + cylHeightExt,
+						d=arrowShaftOD, center=true);
+			}
+		}
+		for (i=[-1, 1])
+			translate([i * mountPlateScrewSep / 2, 0, 0])
+				cylinder(h=plateThickness + cylHeightExt, d=mountPlateScrewD, center=true);
+	}
 }
