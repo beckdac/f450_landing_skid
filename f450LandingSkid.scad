@@ -94,7 +94,9 @@ module tFittingWhole() {
 				arrowShaftOD + 2 * partThickness], center=true);
 		}
 	}
-			translate([(arrowShaftOD + 2 * partThickness) / 2,
+			translate([(arrowShaftOD + 2 * partThickness) / 2
+					- iFitAdjust / 2
+					,
 				arrowShaftOD + 2 * partThickness,
 				0])
 			cube([arrowShaftOD + 2 * partThickness + cylHeightExt,
