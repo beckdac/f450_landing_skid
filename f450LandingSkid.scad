@@ -1,4 +1,5 @@
 // Requires OpenSCAD 2016.3+
+use <BezierScad/BezierScad.scad>;
 
 /* [Main] */
 
@@ -28,6 +29,7 @@ arrowShaftID = arrowShaftOD - 2 * arrowShaftThickness;
 /* [mountPlate] */
 mountPlateScrewD = 4;
 mountPlateScrewSep = 33.5; // tbm
+upperArmLength = 100;
 
 
 render_part();
@@ -117,12 +119,17 @@ module mountPlate() {
 				plateThickness], center=true);
 			hull() {
 			}
-			for (i = [-1,1])
-				translate([i * (mountPlateScrewSep + 4 * mountPlateScrewD) /2, 0, 0])
-				rotate([0, i * 30, 0])
-			#cube([100,
-				arrowShaftOD + 2 * partThickness,
-				plateThickness], center=true);
+			for (i = [-1,1]) {
+				x = 60;
+			#	translate([i * (mountPlateScrewSep + 4 * mountPlateScrewD) /2, 
+					mountPlateScrewD * 2, 0])
+			#	rotate([90, 0, 0])
+				BezWall([
+						[0, 0],
+						[i * x, 0],
+						[i * x, -x * 2]
+					], width = plateThickness, height = 4 * mountPlateScrewD, steps = 32, centered=true);
+			}
 			/* horizontal of T */
 			for (i = [-1, 1])
 				translate([i * (mountPlateScrewSep + 4 * mountPlateScrewD) / 2,
