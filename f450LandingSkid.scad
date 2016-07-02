@@ -174,10 +174,10 @@ module mountPlate() {
 					hull() {
 						cylinder(h=4 * mountPlateScrewD,
 							d=arrowShaftOD + 2 * partThickness, center=true);
-						translate([-i * (4 * mountPlateScrewD),
+						translate([-i * (8 * mountPlateScrewD),
 								(arrowShaftOD + 2 * partThickness) / 2,
 								0])
-							cylinder(h=4 * mountPlateScrewD,
+							#cylinder(h=4 * mountPlateScrewD,
 								d=.00001, center=true);
 					}
 					cylinder(h=4 * mountPlateScrewD + cylHeightExt,
@@ -187,7 +187,7 @@ module mountPlate() {
 		for (i=[-1, 1]) {
 			translate([i * mountPlateScrewSep / 2, 0, 0])
 				cylinder(h=plateThickness * 10 + cylHeightExt, d=mountPlateScrewD, center=true);
-			translate([i * mountPlateScrewSep / 2, 0, - 1.7 * plateThickness])
+			translate([i * mountPlateScrewSep / 2, 0, - 2.5 * plateThickness])
 				cylinder(h=mountPlateScrewCapHeight * 2, d=mountPlateScrewCapD, center=true);
 		}
 		for (i = [-1, 1])
