@@ -29,8 +29,11 @@ arrowShaftID = arrowShaftOD - 2 * arrowShaftThickness;
 /* [mountPlate] */
 mountPlateScrewD = 4;
 mountPlateScrewSep = 33.5; // tbm
-upperArmLength = 100;
-
+skidHeight = 140;
+arrowShaftCurveTrans = .17;
+// below taken from https://www.metricmcc.com/catalog/Ch1/1-32.pdf
+mountPlateScrewCapD = 7 + iFitAdjust;
+mountPlateScrewCapHeight = 4;
 
 render_part();
 
@@ -117,23 +120,55 @@ module mountPlate() {
 			cube([mountPlateScrewSep + 4 * mountPlateScrewD,
 				4 * mountPlateScrewD,
 				plateThickness], center=true);
-			hull() {
-			}
 			for (i = [-1,1]) {
-				x = 60;
-			#	translate([i * (mountPlateScrewSep + 4 * mountPlateScrewD) /2, 
-					mountPlateScrewD * 2, 0])
-			#	rotate([90, 0, 0])
-				BezWall([
-						[0, 0],
-						[i * x, 0],
-						[i * x, -x * 2]
-					], width = plateThickness, height = 4 * mountPlateScrewD, steps = 32, centered=true);
+			 difference() {
+			  union() {
+				translate([i * (mountPlateScrewSep + 4 * mountPlateScrewD) /2, 
+						mountPlateScrewD * 2, 0])
+					rotate([90, 0, 0]) {
+						BezWall([
+								[0, 0],
+								[i * skidHeight / 3.5, 0],
+								[i * skidHeight / 2, -skidHeight * .9],
+								[i * skidHeight / 2, -skidHeight]
+							], widthCtls = [plateThickness, plateThickness, plateThickness, 3 * plateThickness ],
+							height = 4 * mountPlateScrewD, steps = 32, centered=true);
+					}
+				// bracing arm
+				translate([i * (mountPlateScrewSep + 4 * mountPlateScrewD) /2, 
+						mountPlateScrewD * 2, 0])
+					rotate([90, 0, 0]) {
+						BezWall([
+								[0, - plateThickness],
+								[i * skidHeight / 3.5, 0],
+								[i * skidHeight / 2, -skidHeight * .9],
+								[i * skidHeight / 2, -skidHeight]
+							], widthCtls = [3 * plateThickness, 3 * plateThickness, 3 * plateThickness, 3 * plateThickness ],
+							height =  plateThickness, steps = 32, centered=true);
+					}
+				translate([i * skidHeight / 2 + i * skidHeight * (arrowShaftCurveTrans), 
+						0, -skidHeight])
+					rotate([90, 0, 0]) {
+						difference() {
+							cylinder(h=4 * mountPlateScrewD,
+								d=arrowShaftOD + 2 * partThickness, center=true);
+							cylinder(h=4 * mountPlateScrewD + cylHeightExt,
+							d=arrowShaftOD, center=true);
+						}
+					}
+			  }
+				translate([i * skidHeight / 2 + i * skidHeight * (arrowShaftCurveTrans), 
+						0, -skidHeight])
+					rotate([90, 0, 0]) {
+							cylinder(h=4 * mountPlateScrewD + cylHeightExt,
+							d=arrowShaftOD, center=true);
+					}
+			 }
 			}
 			/* horizontal of T */
 			for (i = [-1, 1])
 				translate([i * (mountPlateScrewSep + 4 * mountPlateScrewD) / 2,
-					, 0, plateThickness / 2  -(arrowShaftOD + 2 * partThickness) / 2])
+					0, plateThickness / 2  -(arrowShaftOD + 2 * partThickness) / 2])
 				rotate([90, 0, 0])
 				difference() {
 					hull() {
@@ -142,15 +177,24 @@ module mountPlate() {
 						translate([-i * (4 * mountPlateScrewD),
 								(arrowShaftOD + 2 * partThickness) / 2,
 								0])
-							#cylinder(h=4 * mountPlateScrewD,
+							cylinder(h=4 * mountPlateScrewD,
 								d=.00001, center=true);
 					}
 					cylinder(h=4 * mountPlateScrewD + cylHeightExt,
 						d=arrowShaftOD, center=true);
 			}
 		}
-		for (i=[-1, 1])
+		for (i=[-1, 1]) {
 			translate([i * mountPlateScrewSep / 2, 0, 0])
-				cylinder(h=plateThickness + cylHeightExt, d=mountPlateScrewD, center=true);
+				cylinder(h=plateThickness * 10 + cylHeightExt, d=mountPlateScrewD, center=true);
+			translate([i * mountPlateScrewSep / 2, 0, - 1.7 * plateThickness])
+				cylinder(h=mountPlateScrewCapHeight * 2, d=mountPlateScrewCapD, center=true);
+		}
+		for (i = [-1, 1])
+			translate([i * (mountPlateScrewSep + 4 * mountPlateScrewD) / 2,
+				0, plateThickness / 2  -(arrowShaftOD + 2 * partThickness) / 2])
+			rotate([90, 0, 0])
+					cylinder(h=4 * mountPlateScrewD + cylHeightExt,
+						d=arrowShaftOD, center=true);
 	}
 }
