@@ -4,10 +4,11 @@ use <BezierScad/BezierScad.scad>;
 /* [Main] */
 
 // select part
-part = "assembly";
+//part = "assembly";
 //part = "tFitting";
 //part = "arrowShaft";
-//part = "mountPlate";
+part = "mountPlate";
+//part = "shaftCap";
 
 /* [Misc] */
 plateThickness = 4;	// thickness of mount plate
@@ -35,6 +36,11 @@ arrowShaftCurveTrans = .17;
 mountPlateScrewCapD = 7 + iFitAdjust;
 mountPlateScrewCapHeight = 4;
 
+
+/* [shaftCap] */
+shaftCapLength = 8;
+
+
 render_part();
 
 module render_part() {
@@ -46,6 +52,8 @@ module render_part() {
 		arrowShaft();
 	} else if (part == "mountPlate") {
 		mountPlate();
+	} else if (part == "shaftCap") {
+		shaftCap();
 	} else {
 		// invalid value
 	}
@@ -55,6 +63,17 @@ module assembly() {
 	//arrowShaft(100);
 	//tFitting();
 	mountPlate();
+}
+
+
+module shaftCap() {
+		difference() {
+			cylinder(d=arrowShaftOD + partThickness,
+				h=shaftCapLength, center=true);
+			translate([0, 0, partThickness / 2])
+				cylinder(h=shaftCapLength + cylHeightExt,
+					d=arrowShaftOD, center=true);
+		}
 }
 
 module tFitting() {
