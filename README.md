@@ -3,6 +3,7 @@
 ---
 
 Landing skid for F450 style quad.  Designed in OpenSCAD.  Latest version will always be on github: https://github.com/beckdac/f450_landing_skid
+* Checkout https://github.com/chadkirby/BezierScad in this directory.  
 
 I used carbon fiber arrow shafts for the cross bars after stripping the fletching, nock, and tips, e.g. https://www.amazon.com/gp/product/B00PDAOHPQ .  The padding is pipe insulation from the local hardware store wrapped with warning tape.
 
